@@ -20,9 +20,21 @@ struct Todo<'a>{
 	DateTime: Box<Option<DateTime<Utc>>>,
 }
 
-struct Events;
+struct Events{
+	Title: Option<&'a str>,
+	DateTime: Box<Option<DateTime<Utc>>>,
+	Description: Option<&'a str>,
+	Attendees:Option<&'a str>,
+}
+	
 
-struct appointments;
+struct Appointments{
+	Title: Option<&'a str>,
+	DateTime: Box<Option<DateTime<Utc>>>,
+	With_who: Option<&'a str>,
+	Description: Option<&'a str>,
+}
+	
 
 trait entry_type {
 	fn save(&self) -> Result<Terminator,String> {
@@ -46,6 +58,33 @@ impl<'a> Todo <'a> {
 		}
 	}
 }
+
+impl Events {
+	fn new(Title: Option<&'a str>, DateTime: Box<Option<DateTime<Utc>>>, Description: Option<&'a str>, Attendees:Option<&'a str>) -> Events {
+		Events{
+			Title,
+			DateTime,
+			Description,
+			Attendees,
+		}
+	}
+}
+
+impl Appointments{
+	fn new(Title: Option<&'a str>, DateTime: Box<Option<DateTime<Utc>>>, With_who: Option<&'a str>, Description: Option<&'a str>) -> Appointments {
+		Appointments{
+			Title: Option<&'a str>,
+	        DateTime: Box<Option<DateTime<Utc>>>,
+	        With_who: Option<&'a str>,
+	        Description: Option<&'a str>,
+        }
+     }
+}
+			
+			
+			
+
+
 	
 	
 
@@ -143,6 +182,11 @@ mod tests {
 		assert_eq!(process(words,"test_file.txt".to_string()),Ok(Terminator::No));
 	
 	}
+	#[test]
+	fn input_parser_fails_nonsense() {
+		let input = ["dummy", "feadeafdeasf"].to_vec();
+		assert_eq!(input_parser(input), Err("invalid input".to_string());
+	} 
 		
 	
 	
