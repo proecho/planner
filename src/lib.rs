@@ -1,6 +1,8 @@
-use chrono::{DateTime, TimeZone, NaiveDateTime, Utc};
+use chrono::{DateTime, TimeZone, NaiveDateTime, Utc,};
 use std::boxed::Box;
 use objects::*;
+use regex::Regex;
+use std::str::FromStr;
 	
 
 pub fn process(input:Vec<&str>) -> Result<Terminator,String> {
@@ -46,38 +48,71 @@ fn task(input:Vec<&str>) -> Result<Terminator,String> {
 	
 	
 
-fn input_parser<'a>(input:Vec<&str>) -> Result<entrys<'a>,String> {
+fn input_parser(input:Vec<&str>) -> Result<entrys,String> {
 	match &(*input[1]) {
-		"To_do" =>{
-			return Ok(entrys::Todo(Todo::new(
-				None,
-				None,
-				Box::new(None),
-			)))
-		}
-		"Event" =>{
-			return Ok(entrys::Events(Events::new(
-			    None,
-			    Box::new(None),
-			    None,
-			    None,
-			)))
-		}
-		"appointment" =>{
-			return Ok(entrys::appointments(Appointments::new(
-			    None,
-			    Box::new(None),
-			    None,
-			    None,
-			)))
-		}
+		"To_do" => Ok(entrys::Todo(Event_parser(input,vec!["Title".to_string(),"DateTime".to_string(),"List".to_string(),"ATTyr".to_string()]))),
+
+		"Event" => Ok(entrys::Events(Event_parser(input,vec!["Title".to_string(),"DateTime".to_string(),"Description".to_string(),"Attendees".to_string()]))),
+		
+		"appointment" => Ok(entrys::appointments(Event_parser(input,vec!["Title".to_string(),"DateTime".to_string(),"With_who".to_string(),"Description".to_string()]))),
+		
 	    _ =>{
 			 return Err("invalid input".to_string())
 		}
 	}
 }	 
 
+fn Event_parser< T: entry_type>(input:Vec<&str>,heading_list:Vec<String>) -> T {
+	let mut output:Vec<Option<String>> = Vec::new();
+	
+	for heading in heading_list{
+	    let mut interim_output: Vec<String> = Vec::new();
+		
+		for value in input.clone() {
+			let mut catch = false;
+		    if value == heading{
+				catch = true;				
+			}else if value == "\n"{
+				catch=false;
+			}
+			if catch == true{
+			    interim_output.push(value.to_string());
+			}
+		}
+		if interim_output == (Vec::<String>::new()){
+			output.push(None)
+		}else{
+		    output.push(Some(unifier(interim_output)));
+	    }
+			
+	    
+	}
+    let Title = output[0].clone();
+    let DateTime = output[1].clone();
+    let List = match output[2].clone(){
+		Some(a) => Box::new(Some(DateTime::<Utc>::from_str(&a).unwrap())),
+		None => Box::new(None),
+	};
+    let Other = output[3].clone();
+			
+	
+	return T::new(
+	    Title,
+	    List,
+	    DateTime,
+	    Other,
+	);
+}
 
+fn unifier(vector:Vec<String>)->String{
+	let mut output = String::new(); 
+	for a in vector {
+		output = format!("{} {}", output, a);
+	}
+	
+	output
+}
+	
 
 #[cfg(test)]
 mod tests {
