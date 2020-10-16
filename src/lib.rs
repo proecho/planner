@@ -4,7 +4,7 @@ use objects::*;
 use regex::Regex;
 use std::str::FromStr;
 	
-
+//first stage processing of user input also returns struct which shuts down program.
 pub fn process(input:Vec<&str>) -> Result<Terminator,String> {
 	let processed_input = task(input);
 	match processed_input {
@@ -18,6 +18,8 @@ pub fn process(input:Vec<&str>) -> Result<Terminator,String> {
 	}
 }
 
+//looks at first part of input and send to various function for further processing also returns struct which shuts down program 
+//after further processing new entries are returned here and are saved
 fn task(input:Vec<&str>) -> Result<Terminator,String> {
 	match &(*input[0]){
 		"new" => {
@@ -39,6 +41,9 @@ fn task(input:Vec<&str>) -> Result<Terminator,String> {
 				_ =>{Err("Impossible".to_string())},
 			}
 		}
+		"Terminate" => return Ok(Terminator::Terminate),
+		
+		
 	    _ => {
 			return Err("not implemented".to_string())
 	   }
@@ -47,7 +52,7 @@ fn task(input:Vec<&str>) -> Result<Terminator,String> {
 }
 	
 	
-
+//finishes parsing new entrys through passing to afunction that parses internal feilds and creates object returns reminder objects rapped in an enum with varients for each object
 fn input_parser(input:Vec<&str>) -> Result<entrys,String> {
 	match &(*input[1]) {
 		"To_do" => Ok(entrys::Todo(Event_parser(input,vec!["Title".to_string(),"DateTime".to_string(),"List".to_string(),"ATTyr".to_string()]))),
@@ -62,6 +67,7 @@ fn input_parser(input:Vec<&str>) -> Result<entrys,String> {
 	}
 }	 
 
+//puts informtion in each objects and internal feild and creates objects
 fn Event_parser< T: entry_type>(input:Vec<&str>,heading_list:Vec<String>) -> T {
 	let mut output:Vec<Option<String>> = Vec::new();
 	
@@ -104,6 +110,7 @@ fn Event_parser< T: entry_type>(input:Vec<&str>,heading_list:Vec<String>) -> T {
 	);
 }
 
+//converts vectors of strings into single string
 fn unifier(vector:Vec<String>)->String{
 	let mut output = String::new(); 
 	for a in vector {

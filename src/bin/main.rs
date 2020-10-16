@@ -2,7 +2,8 @@ use std::io;
 use objects::Terminator;
 use planner::process;
 
-
+//user input put in vector and passed into functions for parsing
+//error handling
 fn main() {
 	let mut running = true;
 	while running == true{
@@ -21,7 +22,8 @@ fn main() {
 				input = format!("{}{}",input,input2);
 			}
 		}
-		     
+
+//break words into individual vectors for processing		     
 	    useful_input = input.split_whitespace().collect();
 		let return_value = process(useful_input);
 		match return_value {
