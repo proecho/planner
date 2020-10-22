@@ -1,6 +1,6 @@
 use std::io;
-use objects::Terminator;
-use planner::process;
+use objects::{Terminator, Appointments, entry_type};
+use plannerguts::process;
 
 //user input put in vector and passed into functions for parsing
 //error handling

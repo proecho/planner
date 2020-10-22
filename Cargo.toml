@@ -1,5 +1,5 @@
 [package]
-name = "planner"
+name = "plannerguts"
 version = "0.1.0"
 authors = ["echo"]
 edition = "2018"
@@ -9,4 +9,7 @@ edition = "2018"
 [dependencies]
 chrono = "0.4"
 objects = {path = "../objects"}
-regex = "1"
+display = {path = "../display"}
+shared_parser = {path = "../shared_parser"}
+
+

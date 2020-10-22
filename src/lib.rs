@@ -1,8 +1,9 @@
 use chrono::{DateTime, TimeZone, NaiveDateTime, Utc,};
 use std::boxed::Box;
 use objects::*;
-use regex::Regex;
 use std::str::FromStr;
+use shared_parser::Event_parser;
+
 	
 //first stage processing of user input also returns struct which shuts down program.
 pub fn process(input:Vec<&str>) -> Result<Terminator,String> {
@@ -67,58 +68,6 @@ fn input_parser(input:Vec<&str>) -> Result<entrys,String> {
 	}
 }	 
 
-//puts informtion in each objects and internal feild and creates objects
-fn Event_parser< T: entry_type>(input:Vec<&str>,heading_list:Vec<String>) -> T {
-	let mut output:Vec<Option<String>> = Vec::new();
-	
-	for heading in heading_list{
-	    let mut interim_output: Vec<String> = Vec::new();
-		
-		for value in input.clone() {
-			let mut catch = false;
-		    if value == heading{
-				catch = true;				
-			}else if value == "\n"{
-				catch=false;
-			}
-			if catch == true{
-			    interim_output.push(value.to_string());
-			}
-		}
-		if interim_output == (Vec::<String>::new()){
-			output.push(None)
-		}else{
-		    output.push(Some(unifier(interim_output)));
-	    }
-			
-	    
-	}
-    let Title = output[0].clone();
-    let DateTime = output[1].clone();
-    let List = match output[2].clone(){
-		Some(a) => Box::new(Some(DateTime::<Utc>::from_str(&a).unwrap())),
-		None => Box::new(None),
-	};
-    let Other = output[3].clone();
-			
-	
-	return T::new(
-	    Title,
-	    List,
-	    DateTime,
-	    Other,
-	);
-}
-
-//converts vectors of strings into single string
-fn unifier(vector:Vec<String>)->String{
-	let mut output = String::new(); 
-	for a in vector {
-		output = format!("{} {}", output, a);
-	}
-	
-	output
-}
 	
 
 #[cfg(test)]
